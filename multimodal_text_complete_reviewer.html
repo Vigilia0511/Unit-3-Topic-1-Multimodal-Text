@@ -1,0 +1,453 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+.rv{padding:1rem 0;font-family:var(--font-sans);}
+.hdr{text-align:center;margin-bottom:1.5rem;}
+.hdr h1{font-size:22px;font-weight:500;color:var(--color-text-primary);}
+.hdr p{font-size:13px;color:var(--color-text-secondary);margin-top:4px;}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.5rem;justify-content:center;}
+.tab{padding:6px 14px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s;}
+.tab:hover{background:var(--color-background-secondary);}
+.tab.active{background:#1D9E75;color:#E1F5EE;border-color:#0F6E56;}
+.sec{display:none;}
+.sec.active{display:block;}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:12px;}
+.card h3{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;}
+.card p,.card li{font-size:14px;color:var(--color-text-secondary);line-height:1.7;}
+.card ul{padding-left:1.2rem;margin-top:6px;}
+.badge{display:inline-block;font-size:11px;padding:2px 10px;border-radius:20px;margin-bottom:8px;font-weight:500;}
+.bt{background:#E1F5EE;color:#0F6E56;}
+.bp{background:#EEEDFE;color:#3C3489;}
+.ba{background:#FAEEDA;color:#854F0B;}
+.bb{background:#E6F1FB;color:#185FA5;}
+.bc{background:#FAECE7;color:#993C1D;}
+.bg{background:#EAF3DE;color:#3B6D11;}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:12px;}
+.mc{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:0.75rem 1rem;}
+.mc .lbl{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.mc .val{font-size:14px;font-weight:500;color:var(--color-text-primary);line-height:1.5;}
+.tl{position:relative;padding-left:1.5rem;}
+.tl::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:1px;background:var(--color-border-tertiary);}
+.tli{position:relative;margin-bottom:12px;}
+.tld{position:absolute;left:-1.5rem;top:5px;width:10px;height:10px;border-radius:50%;background:#1D9E75;}
+.tlt{font-size:14px;font-weight:500;color:var(--color-text-primary);}
+.tls{font-size:13px;color:var(--color-text-secondary);margin-top:2px;line-height:1.6;}
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:12px;}
+.mode-card{border-radius:var(--border-radius-md);padding:0.9rem 1rem;border:0.5px solid var(--color-border-tertiary);}
+.mode-card .mnum{font-size:11px;font-weight:500;margin-bottom:4px;}
+.mode-card h4{font-size:14px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px;}
+.mode-card p{font-size:12px;color:var(--color-text-secondary);line-height:1.6;}
+.highlight{background:var(--color-background-secondary);border-left:3px solid #1D9E75;border-radius:0 var(--border-radius-md) var(--border-radius-md) 0;padding:10px 14px;margin:10px 0;font-size:13px;color:var(--color-text-secondary);line-height:1.6;}
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.compare-table th{text-align:left;padding:8px 10px;font-weight:500;color:var(--color-text-primary);background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-secondary);}
+.compare-table td{padding:8px 10px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary);vertical-align:top;}
+.compare-table tr:last-child td{border-bottom:none;}
+/* quiz */
+.score-bar{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:16px;}
+.snum{font-size:24px;font-weight:500;color:var(--color-text-primary);min-width:60px;}
+.slbl{font-size:13px;color:var(--color-text-secondary);}
+.qcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:14px;}
+.qcard .qtxt{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:12px;}
+.choices{display:flex;flex-direction:column;gap:8px;}
+.choice{padding:10px 14px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);font-size:13px;color:var(--color-text-secondary);cursor:pointer;transition:all 0.15s;}
+.choice:hover{background:var(--color-background-secondary);}
+.choice.correct{background:#E1F5EE;border-color:#1D9E75;color:#085041;}
+.choice.wrong{background:#FCEBEB;border-color:#E24B4A;color:#501313;}
+.choice.disabled{pointer-events:none;}
+.fb{font-size:13px;margin-top:10px;padding:8px 12px;border-radius:var(--border-radius-md);display:none;line-height:1.6;}
+.fb.show{display:block;}
+.fb.ok{background:#E1F5EE;color:#085041;}
+.fb.no{background:#FCEBEB;color:#501313;}
+.reset-btn{margin-top:1rem;padding:8px 20px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);background:var(--color-background-primary);font-size:13px;color:var(--color-text-secondary);cursor:pointer;}
+.reset-btn:hover{background:var(--color-background-secondary);}
+.qnum{font-size:11px;color:var(--color-text-secondary);margin-bottom:6px;}
+.pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.pill{font-size:12px;padding:4px 10px;border-radius:20px;background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);}
+.divider{height:0.5px;background:var(--color-border-tertiary);margin:12px 0;}
+</style>
+
+<div class="rv">
+  <div class="hdr">
+    <h1>Unit 3 — Topic 1: Multimodal Text</h1>
+    <p>Communication Aids and Strategies Using Tools of Technology · Complete Reviewer</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('intro',this)">Introduction</button>
+    <button class="tab" onclick="showTab('definition',this)">Definition</button>
+    <button class="tab" onclick="showTab('modes',this)">5 Modes</button>
+    <button class="tab" onclick="showTab('types',this)">Types</button>
+    <button class="tab" onclick="showTab('concepts',this)">Key Concepts</button>
+    <button class="tab" onclick="showTab('examples',this)">Examples</button>
+    <button class="tab" onclick="showTab('objectives',this)">Objectives</button>
+    <button class="tab" onclick="showTab('quiz',this)">Quiz ✎</button>
+  </div>
+
+  <!-- INTRODUCTION -->
+  <div id="intro" class="sec active">
+    <div class="card">
+      <span class="badge bt">Unit Overview</span>
+      <h3>Unit 3: Communication Aids and Strategies Using Tools of Technology</h3>
+      <p>Dramatic changes in media and communication technologies have profoundly transformed how we communicate and share knowledge. The new communication landscape brought about by computers and other technological devices has changed the way we design, negotiate, disseminate, and make meaning.</p>
+    </div>
+    <div class="card">
+      <span class="badge bp">Technology in Student Life</span>
+      <h3>How technology affects students</h3>
+      <p>Technology is undoubtedly an integral part of every student's personal and school life. Research assignments that were once impossible to complete in one day are now achievable thanks to advanced technology. Smartphones and the Internet have become constant companions from morning to night.</p>
+    </div>
+    <div class="card">
+      <span class="badge ba">Unit Focus</span>
+      <h3>What this unit is about</h3>
+      <p>This unit focuses on how technology has drastically changed how students approach school activities and projects due to access to online communities, media production tools, and applications.</p>
+      <div class="highlight">To demonstrate learning, students are asked to propose a cause-oriented activity and present it using the concept of <strong>multimodality</strong>.</div>
+    </div>
+    <div class="grid2">
+      <div class="mc"><div class="lbl">Unit Learning Outcome 1</div><div class="val">Convey ideas through oral, audio-visual, and/or web-based presentations for different audiences</div></div>
+      <div class="mc"><div class="lbl">Unit Learning Outcome 2</div><div class="val">Demonstrate awareness of audience and context in presenting ideas</div></div>
+    </div>
+  </div>
+
+  <!-- DEFINITION -->
+  <div id="definition" class="sec">
+    <div class="card">
+      <span class="badge bt">Core Definition</span>
+      <h3>What is a Multimodal Text?</h3>
+      <p>A text may be defined as <strong>multimodal</strong> when it combines <strong>two or more communication systems</strong>. These systems are called <em>modes</em> and include linguistic, visual, audio, gestural, and spatial elements.</p>
+      <div class="highlight">Simply put: multimodal texts are materials presented using different modes and media.</div>
+    </div>
+    <div class="card">
+      <span class="badge bp">Mode vs. Media</span>
+      <h3>Two key terms to distinguish</h3>
+      <table class="compare-table">
+        <tr><th>Term</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td><strong>Mode</strong></td><td>The communication system used to interpret meaning</td><td>Sound (audio), colors (visual), written words (linguistic)</td></tr>
+        <tr><td><strong>Media</strong></td><td>The manner of dissemination — how the message is delivered</td><td>A traffic sign, a radio broadcast, a poster</td></tr>
+      </table>
+      <div class="highlight" style="margin-top:10px;">Example: In a "No Parking" traffic sign — the <strong>sign itself</strong> is the medium, while the <strong>red border and symbol image</strong> are the modes.</div>
+    </div>
+    <div class="card">
+      <span class="badge ba">Important Clarification</span>
+      <h3>Multimodal ≠ Digital Only</h3>
+      <p>Although multimodal text is often associated with digital communication technologies, it is <strong>not synonymous with digital</strong>. A multimodal text can be paper-based, digital, live, or transmedia.</p>
+      <div class="pill-row">
+        <span class="pill">Books (paper)</span>
+        <span class="pill">Comics (paper)</span>
+        <span class="pill">Posters (paper)</span>
+        <span class="pill">Stage performances (live)</span>
+        <span class="pill">Websites (digital)</span>
+        <span class="pill">Video games (digital)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 MODES -->
+  <div id="modes" class="sec">
+    <div class="card">
+      <span class="badge bt">Overview</span>
+      <h3>The 5 Communication Systems (Modes)</h3>
+      <p>Any multimodal text combines at least two of these five modes to deliver meaning effectively.</p>
+    </div>
+    <div class="mode-grid">
+      <div class="mode-card" style="background:#E1F5EE;">
+        <div class="mnum" style="color:#0F6E56;">Mode 1</div>
+        <h4>Linguistic</h4>
+        <p style="color:#085041;">Spoken and written language through vocabulary, structure, and grammar of oral/written language.</p>
+        <div class="divider" style="border-color:#9FE1CB;"></div>
+        <p style="color:#085041;font-size:11px;">Essays · speeches · captions · dialogue · subtitles</p>
+      </div>
+      <div class="mode-card" style="background:#E6F1FB;">
+        <div class="mnum" style="color:#185FA5;">Mode 2</div>
+        <h4>Visual</h4>
+        <p style="color:#0C447C;">Moving or still images using colors, layouts, screen formats, symbols, shot framings, angle, camera movement, and subject movement.</p>
+        <div class="divider" style="border-color:#B5D4F4;"></div>
+        <p style="color:#0C447C;font-size:11px;">Photos · videos · infographics · diagrams · film</p>
+      </div>
+      <div class="mode-card" style="background:#FAEEDA;">
+        <div class="mnum" style="color:#854F0B;">Mode 3</div>
+        <h4>Audio</h4>
+        <p style="color:#633806;">Volume, pitch, and rhythm of music and sound effects.</p>
+        <div class="divider" style="border-color:#FAC775;"></div>
+        <p style="color:#633806;font-size:11px;">Music · voiceover · sound effects · radio</p>
+      </div>
+      <div class="mode-card" style="background:#FAECE7;">
+        <div class="mnum" style="color:#993C1D;">Mode 4</div>
+        <h4>Gestural</h4>
+        <p style="color:#712B13;">Movement, facial expression, and body language.</p>
+        <div class="divider" style="border-color:#F5C4B3;"></div>
+        <p style="color:#712B13;font-size:11px;">Dance · sign language · acting · gestures</p>
+      </div>
+      <div class="mode-card" style="background:#EEEDFE;">
+        <div class="mnum" style="color:#3C3489;">Mode 5</div>
+        <h4>Spatial</h4>
+        <p style="color:#26215C;">Proximity, direction, position of layout, and organization of objects in space.</p>
+        <div class="divider" style="border-color:#CECBF6;"></div>
+        <p style="color:#26215C;font-size:11px;">Page layout · poster design · furniture arrangement</p>
+      </div>
+    </div>
+    <div class="card">
+      <span class="badge bg">Quick Recall</span>
+      <h3>Memory aid: L-V-A-G-S</h3>
+      <p>Linguistic · Visual · Audio · Gestural · Spatial</p>
+      <div class="highlight" style="margin-top:8px;">A film uses ALL five: dialogue (linguistic), camera shots (visual), soundtrack (audio), actors' expressions (gestural), and set design/scene framing (spatial).</div>
+    </div>
+  </div>
+
+  <!-- TYPES -->
+  <div id="types" class="sec">
+    <div class="card">
+      <span class="badge bt">Type 1 — Paper-based</span>
+      <h3>Paper Multimodal Text</h3>
+      <p>Traditional physical texts that combine modes on a printed surface. These are tangible, non-electronic materials.</p>
+      <ul>
+        <li>Books</li>
+        <li>Comics</li>
+        <li>Posters</li>
+        <li>Brochures</li>
+        <li>Letters</li>
+        <li>Magazines</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge bb">Type 2 — Digital</span>
+      <h3>Digital Multimodal Text</h3>
+      <p>Electronic texts delivered through digital devices or the internet. These leverage ICT tools to combine multiple modes.</p>
+      <ul>
+        <li>Slide presentations (PowerPoint, Google Slides)</li>
+        <li>E-books</li>
+        <li>Blogs and websites</li>
+        <li>E-posters</li>
+        <li>Web pages</li>
+        <li>Films and videos</li>
+        <li>Video games</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge ba">Type 3 — Live</span>
+      <h3>Live Multimodal Text</h3>
+      <p>Real-time, in-person performances or events that combine multiple modes simultaneously in a physical space.</p>
+      <ul>
+        <li>Stage performances / theater</li>
+        <li>Concerts</li>
+        <li>Speeches and oral presentations</li>
+        <li>Live demonstrations</li>
+        <li>School programs and events</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge bc">Type 4 — Transmedia</span>
+      <h3>Transmedia Multimodal Text</h3>
+      <p>A story or message told using a <strong>combination of different media platforms and formats</strong>, with each part working together as part of the same whole.</p>
+      <div class="highlight">Example formats in one transmedia campaign: book + comic + magazine + film + web series + video game — all part of the same story.</div>
+      <div class="divider"></div>
+      <p style="font-size:13px;"><strong>Real-world example from the lesson:</strong> An anti-smoking campaign can be disseminated through:</p>
+      <ul style="margin-top:6px;">
+        <li>A live stage performance</li>
+        <li>A video uploaded to social media</li>
+        <li>A recorded audio aired on the radio</li>
+        <li>A poster and slogan posted in schools and the community</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- KEY CONCEPTS -->
+  <div id="concepts" class="sec">
+    <div class="card">
+      <span class="badge bt">Concept 1</span>
+      <h3>ICT and Multimodal Communication</h3>
+      <p>Information and Communications Technology (ICT) now offers a wide range of tools that allow people to create multimodal texts. These technologies have changed the way we design, negotiate, disseminate, and make meaning.</p>
+    </div>
+    <div class="card">
+      <span class="badge bp">Concept 2</span>
+      <h3>Communication Systems Work Together</h3>
+      <p>In all aspects of communication, we use different modes together to communicate effectively. We use text, images, and sounds to deliver a message in the same way that audiences use these tools to understand it.</p>
+      <div class="highlight">No single mode works in isolation in a truly effective multimodal text — they work in combination to reinforce the message.</div>
+    </div>
+    <div class="card">
+      <span class="badge ba">Concept 3</span>
+      <h3>Audience and Context Awareness</h3>
+      <p>An effective multimodal text must consider:</p>
+      <ul>
+        <li><strong>Target audience</strong> — Who is the message for? (age, background, location)</li>
+        <li><strong>Context</strong> — Where and how will it be delivered? (online, print, live)</li>
+        <li><strong>Purpose</strong> — What should the audience feel, think, or do?</li>
+      </ul>
+      <div class="highlight" style="margin-top:8px;">The anti-smoking poster in the "Activating Prior Learning" section uses dark colors, a lung image, and urgent text — all chosen deliberately for the target audience (smokers or potential smokers) and context (public awareness).</div>
+    </div>
+    <div class="card">
+      <span class="badge bb">Concept 4</span>
+      <h3>Cause-Oriented Multimodal Presentation</h3>
+      <p>As a unit output, students are expected to propose a cause-oriented activity and present it using multimodality — demonstrating the ability to convey ideas through oral, audio-visual, and/or web-based presentations for different audiences in local and global settings.</p>
+    </div>
+  </div>
+
+  <!-- EXAMPLES -->
+  <div id="examples" class="sec">
+    <div class="card">
+      <span class="badge bt">From the Lesson</span>
+      <h3>Anti-smoking poster ("Time is Ticking")</h3>
+      <p>The poster in the Activating Prior Learning section is a classic multimodal text combining:</p>
+      <ul>
+        <li><strong>Visual mode</strong> — darkened lungs, cigarettes styled as a bomb, black background</li>
+        <li><strong>Linguistic mode</strong> — text: "Time is ticking… Stop while you still CAN!!"</li>
+        <li><strong>Spatial mode</strong> — layout placing the image on the left and the slogan on the right for dramatic effect</li>
+      </ul>
+      <div class="highlight">Target audience: smokers or people at risk of smoking. The urgency is created through the combination of all three modes.</div>
+    </div>
+    <div class="card">
+      <span class="badge bp">From the Lesson</span>
+      <h3>No Parking traffic sign</h3>
+      <p>Used to explain Mode vs. Media:</p>
+      <ul>
+        <li><strong>Medium</strong> — the traffic sign itself (the physical object)</li>
+        <li><strong>Mode (Visual)</strong> — red border and the crossed-out "P" symbol</li>
+        <li><strong>Mode (Linguistic)</strong> — the words "NO PARKING"</li>
+      </ul>
+    </div>
+    <div class="card">
+      <span class="badge ba">Word Cloud from the Lesson</span>
+      <h3>Common multimodal text formats</h3>
+      <div class="pill-row">
+        <span class="pill">Movies</span><span class="pill">Infographics</span><span class="pill">Booklets</span>
+        <span class="pill">Sketchnoting</span><span class="pill">Books</span><span class="pill">Emails</span>
+        <span class="pill">Vodcasts</span><span class="pill">Advertisements</span><span class="pill">Newscasts</span>
+        <span class="pill">Book trailers</span><span class="pill">Animation</span><span class="pill">Images with annotation</span>
+        <span class="pill">Comics</span><span class="pill">Brochures</span><span class="pill">Broadcasts</span>
+        <span class="pill">Visual Notetaking</span><span class="pill">Tutorial Guides</span>
+        <span class="pill">Mindmap</span><span class="pill">Presentations</span><span class="pill">Typedrawing</span>
+        <span class="pill">Text Messages</span><span class="pill">Ebooks</span><span class="pill">Diagrams</span>
+        <span class="pill">Cards</span><span class="pill">Screencasts</span><span class="pill">Letters</span>
+        <span class="pill">Posters</span><span class="pill">Blogging</span><span class="pill">Videos</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEARNING OBJECTIVES -->
+  <div id="objectives" class="sec">
+    <div class="card">
+      <span class="badge bt">Unit Learning Outcomes</span>
+      <h3>At the end of Unit 3, students are expected to:</h3>
+      <div class="tl" style="margin-top:10px;">
+        <div class="tli"><div class="tld"></div><div class="tlt">Outcome 1</div><div class="tls">Convey ideas through oral, audio-visual, and/or web-based presentations for different target audiences in local and global settings.</div></div>
+        <div class="tli"><div class="tld"></div><div class="tlt">Outcome 2</div><div class="tls">Demonstrate awareness of audience and context in presenting ideas.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="badge bp">Topic 1 Learning Objectives</span>
+      <h3>At the end of Topic 1, students are expected to:</h3>
+      <div class="tl" style="margin-top:10px;">
+        <div class="tli"><div class="tld"></div><div class="tlt">Objective 1</div><div class="tls">Define multimodal text.</div></div>
+        <div class="tli"><div class="tld"></div><div class="tlt">Objective 2</div><div class="tls">Determine the message conveyed by a multimodal material.</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <span class="badge ba">Performance Task</span>
+      <h3>End-of-Unit Task</h3>
+      <p>Propose a <strong>cause-oriented activity</strong> and present it using the concept of <strong>multimodality</strong>, showing awareness of audience, context, and the effective use of multiple communication modes and media.</p>
+      <div class="highlight" style="margin-top:8px;">Think: Which modes will you use? Which media? Who is your audience? What is your cause?</div>
+    </div>
+    <div class="card">
+      <span class="badge bg">Summary Checklist</span>
+      <h3>What you need to know for this topic</h3>
+      <ul>
+        <li>Definition of multimodal text</li>
+        <li>The 5 communication systems/modes (L-V-A-G-S)</li>
+        <li>Difference between mode and media</li>
+        <li>4 types of multimodal text (paper, digital, live, transmedia)</li>
+        <li>Examples of multimodal texts in everyday life</li>
+        <li>How multimodal text is used to communicate to different audiences</li>
+        <li>Role of ICT in creating multimodal texts</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="sec">
+    <div class="score-bar">
+      <div>
+        <div class="slbl">Your score</div>
+        <div class="snum" id="score-display">0 / 12</div>
+      </div>
+      <div style="flex:1;">
+        <div style="background:var(--color-border-tertiary);border-radius:4px;height:6px;">
+          <div id="score-fill" style="background:#1D9E75;height:6px;border-radius:4px;width:0%;transition:width 0.4s;"></div>
+        </div>
+        <div id="score-msg" style="font-size:12px;color:var(--color-text-secondary);margin-top:4px;"></div>
+      </div>
+    </div>
+    <div id="quiz-container"></div>
+    <button class="reset-btn" onclick="resetQuiz()">Reset quiz</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {q:"A text is considered multimodal when it...",choices:["Uses only digital technology","Combines two or more communication systems","Is written in more than one language","Contains images only"],correct:1,exp:"A text is multimodal when it combines two or more of the five communication systems: linguistic, visual, audio, gestural, and spatial."},
+  {q:"Which of the following is the best definition of 'mode' in multimodal communication?",choices:["The physical platform used to deliver a message","The number of languages used in a text","The communication system used to interpret meaning","The audience for whom the text is made"],correct:2,exp:"Mode refers to any communication system that helps us interpret meanings — like audio, visual, or linguistic elements."},
+  {q:"In the 'No Parking' traffic sign example, what is the MEDIUM?",choices:["The red border","The crossed-out P symbol","The words 'NO PARKING'","The traffic sign itself"],correct:3,exp:"The traffic sign itself is the medium (manner of dissemination), while the red border and symbol are the modes."},
+  {q:"Which mode refers to volume, pitch, and rhythm of music and sound effects?",choices:["Linguistic","Visual","Gestural","Audio"],correct:3,exp:"Audio mode refers to volume, pitch, and rhythm of music and sound effects."},
+  {q:"Facial expressions, body language, and movement belong to which mode?",choices:["Spatial","Audio","Gestural","Visual"],correct:2,exp:"Gestural mode refers to movement, facial expression, and body language."},
+  {q:"The layout, proximity, and position of objects in space refer to which mode?",choices:["Spatial","Linguistic","Visual","Gestural"],correct:0,exp:"Spatial mode refers to proximity, direction, position of layout, and the organization of objects in space."},
+  {q:"A story told across a book, film, web series, AND video game is called:",choices:["Digital text","Live text","Transmedia text","Paper-based text"],correct:2,exp:"Transmedia texts tell a story or message using a combination of different media platforms and formats, each working as part of the same whole."},
+  {q:"Which of the following is an example of a LIVE multimodal text?",choices:["A blog post","An e-book","A stage performance","A printed comic book"],correct:2,exp:"Live multimodal texts are real-time performances that combine modes in a physical space, like a stage performance or concert."},
+  {q:"Which statement about multimodal texts is TRUE?",choices:["They can only be created using digital technology","They must always include all five modes","They are not limited to digital formats","They are only effective for young audiences"],correct:2,exp:"Multimodal texts are not synonymous with digital. They can be paper-based, live, digital, or transmedia."},
+  {q:"The anti-smoking poster 'Time is Ticking' uses which combination of modes?",choices:["Audio, gestural, spatial","Linguistic, visual, spatial","Linguistic, audio, gestural","Visual, audio, transmedia"],correct:1,exp:"The poster uses linguistic mode (text), visual mode (images and dark colors), and spatial mode (layout of elements) to deliver its message."},
+  {q:"What does ICT stand for?",choices:["Interactive Creative Technology","Information and Communications Technology","Integrated Computer Tools","International Communication Terms"],correct:1,exp:"ICT stands for Information and Communications Technology, which now offers tools that allow us to create multimodal texts."},
+  {q:"An anti-smoking campaign that uses a stage play, social media video, radio broadcast, AND a community poster is an example of:",choices:["A digital text only","A live text only","A transmedia multimodal text","A paper-based text"],correct:2,exp:"This is transmedia — the message is spread across multiple media platforms (stage, video, radio, print) all working together as part of the same campaign."}
+];
+
+let score=0;
+
+function buildQuiz(){
+  const c=document.getElementById('quiz-container');
+  c.innerHTML='';
+  questions.forEach((q,i)=>{
+    const div=document.createElement('div');
+    div.className='qcard';
+    div.innerHTML=`<div class="qnum">Question ${i+1} of ${questions.length}</div><div class="qtxt">${q.q}</div><div class="choices" id="ch-${i}">${q.choices.map((ch,j)=>`<div class="choice" data-idx="${j}" onclick="answer(${i},${j})">${ch}</div>`).join('')}</div><div class="fb" id="fb-${i}"></div>`;
+    c.appendChild(div);
+  });
+  updateScore();
+}
+
+function answer(qi,ci){
+  const q=questions[qi];
+  const ch=document.getElementById(`ch-${qi}`);
+  const fb=document.getElementById(`fb-${qi}`);
+  ch.querySelectorAll('.choice').forEach(c=>c.classList.add('disabled'));
+  if(ci===q.correct){
+    ch.querySelectorAll('.choice')[ci].classList.add('correct');
+    fb.textContent='✓ Correct! '+q.exp;
+    fb.className='fb show ok';
+    score++;
+  } else {
+    ch.querySelectorAll('.choice')[ci].classList.add('wrong');
+    ch.querySelectorAll('.choice')[q.correct].classList.add('correct');
+    fb.textContent='✗ Not quite. '+q.exp;
+    fb.className='fb show no';
+  }
+  updateScore();
+}
+
+function updateScore(){
+  document.getElementById('score-display').textContent=`${score} / ${questions.length}`;
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('score-fill').style.width=pct+'%';
+  let msg='';
+  if(score===questions.length) msg='Perfect score! Excellent work!';
+  else if(pct>=80) msg='Great job! Almost there.';
+  else if(pct>=50) msg='Good effort. Keep reviewing!';
+  else if(score>0) msg='Keep going, you can do it!';
+  document.getElementById('score-msg').textContent=msg;
+}
+
+function resetQuiz(){score=0;buildQuiz();}
+
+function showTab(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+}
+
+buildQuiz();
+</script>
